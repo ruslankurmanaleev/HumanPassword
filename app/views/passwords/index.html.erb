@@ -1,0 +1,8 @@
+<p>Ваш новый пароль: <b><%= @password %></b></p>
+
+<%= form_with(scope: "pass", url: "/") do |f| %>
+  <%= f.label(:length, "Длина пароля") %>
+  <%= f.select(:length, (5..20).to_a.reverse, selected: 20) %>
+  <br>
+  <%= f.submit "Сгенерировать пароль" %>
+<% end %>
