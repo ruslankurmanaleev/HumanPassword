@@ -5,6 +5,7 @@
             <header class="text-center">
               <h1 class="tm-site-title">Humanized Password</h1>
             </header>
+            <br>
             <%= form_with(scope: "pass", url: "/", class: "text-center mt-4 mb-0") do |f| %>
               <%= f.label(:length, "Длина пароля") %>
               <%= f.select(:length, (5..20).to_a.reverse, selected: 20) %>
