@@ -1,4 +1,6 @@
 class HumanizedPassword
+  attr_reader :pass
+
   def initialize(params)
     @length = params[:length].to_i
     @pass = []
@@ -41,14 +43,18 @@ class HumanizedPassword
 
   # Example: ravozite79sagitaju46
   def complex_mix
-    # Calculate the number of syllables
-    quarters = @length / 2
+    # Calculate the number of words (letters + digits)
+    length_half = @length / 2
+    # Set the number of pairs to have less digits and more letters
+    pairs = @length < 18 ? 5 : 6
     # Leave some space for digits
-    @pass << syllable(quarters - 6)
-    # Add 2 to 4 digits
-    @pass << digits([2, 3, 4].sample)
+    @pass << syllable(length_half - pairs)
+    # Add 1 to 2 digits
+    @pass << digits(2)
     # And fill with more syllables
-    @pass << syllable(quarters - 6)
+    @pass << syllable(length_half - pairs)
+    # Add additional syllable
+    @pass << syllable(1) if @length < 20
     # Fill the left space with digits if required
     @pass << digits(@length - @pass.join.size) if @length > @pass.join.size
 
