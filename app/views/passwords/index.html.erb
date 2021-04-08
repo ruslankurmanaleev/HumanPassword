@@ -1,8 +1,21 @@
-<p>Ваш новый пароль: <b><%= @password %></b></p>
-
-<%= form_with(scope: "pass", url: "/") do |f| %>
-  <%= f.label(:length, "Длина пароля") %>
-  <%= f.select(:length, (5..20).to_a.reverse, selected: 20) %>
-  <br>
-  <%= f.submit "Сгенерировать пароль" %>
-<% end %>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="tm-bg-circle-white tm-flex-center-v">
+            <header class="text-center">
+              <h1 class="tm-site-title">Humanized Password</h1>
+            </header>
+            <%= form_with(scope: "pass", url: "/", class: "text-center mt-4 mb-0") do |f| %>
+              <%= f.label(:length, "Длина пароля") %>
+              <%= f.select(:length, (5..20).to_a.reverse, selected: 20) %>
+              <br>
+              <%= f.submit("Сгенерировать пароль", class: "btn tm-btn-secondary") %>
+              <br>
+            <% end %>
+            <br>
+            <h5><p class="text-center">Ваш новый пароль:</p></h5>
+            <h3><b><p class="text-center"><%= @password %></p></b></h3>
+          </div>
+        </div>
+      </div>
+    </div>
