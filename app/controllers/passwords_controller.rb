@@ -1,6 +1,6 @@
 class PasswordsController < ApplicationController
   def index
-    @password = "Здесь будет ваш новый пароль"
+    @password = "Здесь будет пароль"
   end
 
   def create
