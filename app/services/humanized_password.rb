@@ -7,13 +7,16 @@ class HumanizedPassword
   end
 
   def generate
-    # We don't need digits for pass with length below 9
+    # Calculate number of syllables
+    @number_of_pairs = @length / 2
+
+    # We need words and 1 digit for passwords with less then 9 length
     return only_words if @length < 9
 
-    # We need digits for passwords from 9 to 15
+    # We need more digits (2-4) for passwords from 9 to 15 length
     return words_and_digits if @length < 16
 
-    # Insane mode for complex, long passwords
+    # We need 2 pairs of words (6-8 symbols) and 2-5 digits for passwords 17-20 length
     complex_mix
   end
 
@@ -21,48 +24,65 @@ class HumanizedPassword
 
   # Example: dumowys
   def only_words
+    # Calculate the number of left symbols after filling the @pass with syllables
+    symbols_left = @length % 2
     # Fill with syllables
-    @pass << syllable(@length / 2)
-    # Fill with 0 or 1 vowel
-    @pass << vowels(@length % 2)
+    fill_with_syllables
+    # Fill with 1 vowel if there any symbols_left
+    fill_with_digits(symbols: 1) unless symbols_left.zero?
 
     @pass.join
   end
 
   # Example: wonitumavusu002
   def words_and_digits
-    # Calculate the number of syllables
-    quarters = @length / 2
+    # Reserve 1 symbol for digit
+    @number_of_pairs -= 1
     # Fill with syllables, but book the space digits
-    @pass << syllable(quarters - 1)
+    fill_with_syllables
     # Fill the left space with digits
-    @pass << digits(@length - @pass.join.size)
+    fill_with_digits(symbols: fetch_symbols_left)
 
     @pass.join
   end
 
   # Example: ravozite79sagitaju46
   def complex_mix
-    # Calculate the number of words (letters + digits)
-    length_half = @length / 2
     # Set the number of pairs to have less digits and more letters
-    pairs = @length < 18 ? 5 : 6
+    reserved_pairs_for_digits = @length < 18 ? 5 : 6
+    syllables_pairs = @number_of_pairs - reserved_pairs_for_digits
     # Leave some space for digits
-    @pass << syllable(length_half - pairs)
+    fill_with_syllables(pairs: syllables_pairs)
     # Add 1 to 2 digits
-    @pass << digits(2)
+    fill_with_digits(symbols: 2)
     # And fill with more syllables
-    @pass << syllable(length_half - pairs)
+    fill_with_syllables(pairs: syllables_pairs)
     # Add additional syllable
-    @pass << syllable(1) if @length < 20
+    fill_with_syllables(pairs: 1) if @length < 20
     # Fill the left space with digits if required
-    @pass << digits(@length - @pass.join.size) if @length > @pass.join.size
+    fill_with_digits(symbols: fetch_symbols_left) if available_space_for_digits?
 
     @pass.join
   end
 
+  def fill_with_syllables(pairs: @number_of_pairs)
+    @pass << generate_syllable(pairs: pairs)
+  end
+
+  def fill_with_digits(symbols: 1)
+    @pass << digits(symbols: symbols)
+  end
+
+  def fetch_symbols_left
+    @length - @pass.join.size
+  end
+
+  def available_space_for_digits?
+    @length > @pass.join.size
+  end
+
   # Constructor for syllables
-  def syllable(pairs)
+  def generate_syllable(pairs: 1)
     output = []
 
     pairs.times { output << "#{vowels}#{constonant}" }
@@ -70,15 +90,15 @@ class HumanizedPassword
     output
   end
 
-  def vowels(size = 1)
+  def vowels(size: 1)
     %w[b c d f g h j k l m n p q r s t v w x z].sample(size).join
   end
 
-  def constonant(size = 1)
+  def constonant(size: 1)
     %w[a e i o u y].sample(size).join
   end
 
-  def digits(length)
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0].sample(length).join
+  def digits(symbols:)
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0].sample(symbols).join
   end
 end

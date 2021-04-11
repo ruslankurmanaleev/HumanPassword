@@ -6,7 +6,8 @@ end
 
 RSpec.shared_examples "contains only letters" do
   it "generates password with only letters" do
-    expect(context).to match(/[a-z]{5,9}/)
+    expect(context.delete("^[a-z]").size).to be_between(4, 8)
+    expect(context.delete("^[0-9]").size).to be_between(0, 1)
   end
 end
 
