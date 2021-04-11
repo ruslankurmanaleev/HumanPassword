@@ -3,8 +3,6 @@ require "rails_helper"
 RSpec.describe HumanizedPassword do
   let(:context) { described_class.new(length: length).generate }
 
-  before { pp context }
-
   context "small password (<9)" do
     describe "when password is 5 length" do
       let(:length) { 5 }
